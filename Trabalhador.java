@@ -13,10 +13,9 @@ public class Trabalhador {
       String produto = pedido.produtos.get(i);
       Integer quantity = pedido.quantity.get(i);
 
-      if (this.produtos.contains(produto) && this.produtos.get(produto) >= quantity) {
+      if (this.produtos.containsKey(produto) && this.produtos.get(produto) >= quantity) {
         
       } else {
-        System.out.println(produto+ " "+ quantity);
         throw new Exception("Pedido rejeitado!");
       }
     }
