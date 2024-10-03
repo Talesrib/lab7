@@ -24,6 +24,9 @@ public class Sistema {
             executor.submit(producer);
         }
 
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(() -> {ListaProdutos.reaProdutos(produtos);}, 10, 10, TimeUnit.SECONDS);
+        
         executor.shutdown();
     }
 }
