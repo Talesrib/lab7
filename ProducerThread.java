@@ -4,14 +4,17 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 import util.ListaProdutos;
+import util.Relatorio;
 
 public class ProducerThread extends Thread {
-    BlockingQueue<Pedido> queue;
-    Trabalhador trabalhador;
-    String[] produtos = ListaProdutos.getProdutos();
+    private BlockingQueue<Pedido> queue;
+    private Trabalhador trabalhador;
+    private String[] produtos = ListaProdutos.getProdutos();
+    private Relatorio relatorio;
     
-    ProducerThread(BlockingQueue<Pedido> q) { // Simula um pedido de cliente
+    ProducerThread(BlockingQueue<Pedido> q, Relatorio r) { // Simula um pedido de cliente
         this.queue = q;
+        this.relatorio = r;
     }
     
     public void run() {
@@ -39,6 +42,7 @@ public class ProducerThread extends Thread {
         try {
             System.out.println(String.format("Cliente %d fez um pedido: %s", clientId, pedido.toString()));
             queue.put(pedido);
+            relatorio.incrementTotalPedidos();
         } catch (InterruptedException e) {
         }
     }
