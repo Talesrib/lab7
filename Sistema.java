@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class Sistema {
@@ -52,4 +55,21 @@ public class Sistema {
         
     }
 
+    
+    private static void fazerPedido(int clientId) {
+        Random random = new Random();
+        List<String> p = new ArrayList<>();
+        List<Integer> q = new ArrayList<>();
+        int nProdutos = random.nextInt(10);
+        for (int i = 0; i < nProdutos; i++) {
+            p.add(i, produtos[i]);
+            q.add(i, random.nextInt(1,10));
+        }
+        Pedido pedido = new Pedido(p, q);
+        try {
+            filaPedidos.put(pedido);
+            System.out.println(String.format("Cliente %d fez um pedido: %s", clientId, pedido.toString()));
+        } catch (InterruptedException e) {
+        }
+    }
 }
