@@ -1,6 +1,8 @@
 import java.util.concurrent.*;
 
 import util.ListaProdutos;
+import util.GerarRelatorio;
+import util.Relatorio;
 
 public class Sistema {
 
@@ -9,24 +11,25 @@ public class Sistema {
     
     private static BlockingQueue<Pedido> filaPedidos = new LinkedBlockingQueue<>(50);
 
-    private static ConcurrentHashMap<Integer, String> resultados = new ConcurrentHashMap<>();
-
     public static void main(String[] args) throws InterruptedException {
         ConcurrentHashMap<String, Integer> produtos = ListaProdutos.generateInitialProdutos();
+        Relatorio relatorio = new Relatorio();
         ExecutorService executor = Executors.newFixedThreadPool(NUMERO_DE_WORKERS + NUMERO_DE_THREADS_CLIENTES);
         for (int i = 0; i < NUMERO_DE_WORKERS; i++) {
-            Runnable worker = new WorkerThread(filaPedidos, produtos);
+            Runnable worker = new WorkerThread(filaPedidos, produtos, relatorio);
             executor.submit(worker);
         }
 
         for (int i = 0; i < NUMERO_DE_THREADS_CLIENTES; i++) {
-            Runnable producer = new ProducerThread(filaPedidos);
+            Runnable producer = new ProducerThread(filaPedidos, relatorio);
             executor.submit(producer);
         }
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
         scheduler.scheduleAtFixedRate(() -> {ListaProdutos.reaProdutos(produtos);}, 10, 10, TimeUnit.SECONDS);
-        
+
+        scheduler.scheduleAtFixedRate(() -> {GerarRelatorio.gerarRelatorio(relatorio);}, 30, 30, TimeUnit.SECONDS);
+
         executor.shutdown();
     }
 }
