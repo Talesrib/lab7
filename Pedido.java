@@ -13,9 +13,9 @@ public class Pedido {
   }
 
   public String toString() {
-    String result = String.format("id: %d", id);
+    String result = String.format("id: %d ", id);
     for (int e = 0; e < this.produtos.size(); e++) {
-      result += String.format("%s: %d", produtos.get(e), quantity.get(e));
+      result += String.format("%s: %d ", produtos.get(e), quantity.get(e));
     }
     return result;
   }
