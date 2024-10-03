@@ -13,27 +13,18 @@ public class Sistema {
     private static ConcurrentHashMap<Integer, String> resultados = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws InterruptedException {
-        ExecutorService executor = Executors.newCachedThreadPool();
         ConcurrentHashMap<String, Integer> produtos = new ConcurrentHashMap<>();
-
-        
-    }
-
-    
-    private static void fazerPedido(int clientId) {
-        Random random = new Random();
-        List<String> p = new ArrayList<>();
-        List<Integer> q = new ArrayList<>();
-        int nProdutos = random.nextInt(10);
-        for (int i = 0; i < nProdutos; i++) {
-            p.add(i, produtos[i]);
-            q.add(i, random.nextInt(1,10));
+        ExecutorService executor = Executors.newFixedThreadPool(NUMERO_DE_WORKERS + NUMERO_DE_THREADS_CLIENTES);
+        for (int i = 0; i < NUMERO_DE_WORKERS; i++) {
+            Runnable worker = new WorkerThread(filaPedidos, produtos);
+            executor.submit(worker);
         }
-        Pedido pedido = new Pedido(p, q);
-        try {
-            filaPedidos.put(pedido);
-            System.out.println(String.format("Cliente %d fez um pedido: %s", clientId, pedido.toString()));
-        } catch (InterruptedException e) {
+
+        for (int i = 0; i < NUMERO_DE_THREADS_CLIENTES; i++) {
+            Runnable producer = new ProducerThread(filaPedidos);
+            executor.submit(producer);
         }
+
+        executor.shutdown();
     }
 }
