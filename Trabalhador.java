@@ -16,6 +16,7 @@ public class Trabalhador {
       if (this.produtos.contains(produto) && this.produtos.get(produto) >= quantity) {
         
       } else {
+        System.out.println(produto+ " "+ quantity);
         throw new Exception("Pedido rejeitado!");
       }
     }

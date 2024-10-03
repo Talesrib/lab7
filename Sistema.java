@@ -1,7 +1,6 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
+
+import util.ListaProdutos;
 
 public class Sistema {
 
@@ -13,7 +12,7 @@ public class Sistema {
     private static ConcurrentHashMap<Integer, String> resultados = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws InterruptedException {
-        ConcurrentHashMap<String, Integer> produtos = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Integer> produtos = ListaProdutos.generateInitialProdutos();
         ExecutorService executor = Executors.newFixedThreadPool(NUMERO_DE_WORKERS + NUMERO_DE_THREADS_CLIENTES);
         for (int i = 0; i < NUMERO_DE_WORKERS; i++) {
             Runnable worker = new WorkerThread(filaPedidos, produtos);

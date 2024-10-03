@@ -3,21 +3,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
+import util.ListaProdutos;
+
 public class ProducerThread extends Thread {
     BlockingQueue<Pedido> queue;
     Trabalhador trabalhador;
-    String[] produtos = {
-        "Smartphone",
-        "Notebook",
-        "Câmera DSLR",
-        "Fone de Ouvido Bluetooth",
-        "Monitor 4K",
-        "Teclado Mecânico",
-        "Mouse Gamer",
-        "Tablet",
-        "Impressora Multifuncional",
-        "Smartwatch"
-    };
+    String[] produtos = ListaProdutos.getProdutos();
     
     ProducerThread(BlockingQueue<Pedido> q) { // Simula um pedido de cliente
         this.queue = q;
@@ -46,8 +37,8 @@ public class ProducerThread extends Thread {
         }
         Pedido pedido = new Pedido(p, q);
         try {
-            queue.put(pedido);
             System.out.println(String.format("Cliente %d fez um pedido: %s", clientId, pedido.toString()));
+            queue.put(pedido);
         } catch (InterruptedException e) {
         }
     }
