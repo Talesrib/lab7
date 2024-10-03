@@ -21,6 +21,30 @@ public class Sistema {
 
     private static ConcurrentHashMap<Integer, String> resultados = new ConcurrentHashMap<>();
 
+    class Worker extends Thread {
+        BlockingQueue<Pedido> queue;
+        Trabalhador trabalhador;
+        Worker(BlockingQueue<Pedido> q, ConcurrentHashMap<String, Integer> p) {
+            this.queue = q;
+            this.trabalhador = new Trabalhador(p);
+        }
+        
+        public void run() {
+            try {
+            while (true) {
+                Pedido x = queue.take();
+                if (x == null) {
+                    break;
+                }
+                trabalhador.processarPedido(x);
+            }
+            } catch (InterruptedException e) {
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = Executors.newCachedThreadPool();
         ConcurrentHashMap<String, Integer> produtos = new ConcurrentHashMap<>();
